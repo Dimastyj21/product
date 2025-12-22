@@ -22,18 +22,28 @@ jobs:
           node-version: 18           # Используемая версия node.js
 
       - name: Install dependencies
-        run: npm ci                  # Быстрая и надёжная установка зависимостей
+        run: |
+          cd server                  # Переход в папку server с package.json
+          npm ci                     # Быстрая и надёжная установка зависимостей
 
       - name: Build project
-        run: npm run build           # Собрать проект (если есть сборка)
+        run: |
+          cd server
+          npm run build              # Сборка проекта
 
       - name: Run unit tests
-        run: npm test                # Запуск юнит-тестов с отчетом
+        run: |
+          cd server
+          npm test                   # Запуск юнит-тестов с отчетом
 
       # Если есть, можно добавить запуск линтера:
       # - name: Run lint
-      #   run: npm run lint
+      #   run: |
+      #     cd server
+      #     npm run lint
 
-      # Можно добавить шаг с запуском интеграционных или e2e тестов, например:
+      # Можно добавить запуск интеграционных или e2e тестов:
       # - name: Run e2e tests
-      #   run: npm run test:e2e
+      #   run: |
+      #     cd server
+      #     npm run test:e2e
