@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Post, ValidationPipe } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { Product } from './product.model'
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -8,17 +8,36 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Get() 
-    getAll(): Promise<Product[]> {
-        return this.productsService.findAll()
+    async getAll(): Promise<Product[]> {
+        try {
+            return await this.productsService.findAll()
+        } catch (error) {
+            throw new InternalServerErrorException('Database error');
+        }
     }
 
     @Get(':id')
-    getById(@Param('id', ParseIntPipe) id: number): Promise<Product> {
-        return this.productsService.findOne(id)
+    async getById(@Param('id', ParseIntPipe) id: number): Promise<Product> {
+        if (!Number.isInteger(id) || id <= 0) {
+         throw new BadRequestException('Invalid product ID');
+       }
+        try {
+     return await this.productsService.findOne(id);
+   } catch (error) {
+     if (error instanceof NotFoundException) {
+       throw error;
+     }
+     throw new InternalServerErrorException('Database error');
+   }
     }
 
     @Post()
-    createProduct(@Body() createProductDto: CreateProductDto): Promise<Product> {
-        return this.productsService.create(createProductDto)
+    async createProduct(@Body(new ValidationPipe()) createProductDto: CreateProductDto): Promise<Product> {
+        try {
+            
+            return await this.productsService.create(createProductDto)
+        } catch (error) {
+            throw new InternalServerErrorException('Database error');
+        }
     }
 }
