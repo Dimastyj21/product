@@ -1,49 +1,65 @@
 # .github/workflows/ci.yml
-
 name: CI Pipeline
-
 on:
   push:
-    branches: [ main, orders ]       # Запускать при пуше в main и orders
+    branches: [main, orders]
   pull_request:
-    branches: [ main, orders ]       # Запускать при открытии/обновлении PR в main или orders
+    branches: [main, orders]
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest           # Установленная среда GitHub Actions
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3   # Клонирование кода
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20           # Используемая версия node.js
+          node-version: 20
 
       - name: Install dependencies
         run: |
-          cd server                  # Переход в папку server с package.json
-          npm ci                     # Быстрая и надёжная установка зависимостей
+          cd server
+          npm ci
 
       - name: Build project
         run: |
           cd server
-          npm run build              # Сборка проекта
+          npm run build
 
       - name: Run unit tests
+        env:
+          DB_HOST: localhost
+          DB_USER: user
+          DB_PASS: password
+          DB_NAME: test_db
         run: |
           cd server
-          npm test                   # Запуск юнит-тестов с отчетом
+          npm test
 
-      # Если есть, можно добавить запуск линтера:
-      # - name: Run lint
-      #   run: |
-      #     cd server
-      #     npm run lint
-
-      # Можно добавить запуск интеграционных или e2e тестов:
-      # - name: Run e2e tests
-      #   run: |
-      #     cd server
-      #     npm run test:e2e
+      - name: Run integration tests
+        env:
+          DB_HOST: localhost
+          DB_USER: user
+          DB_PASS: password
+          DB_NAME: test_db
+        run: |
+          cd server
+          npm run test:integration
