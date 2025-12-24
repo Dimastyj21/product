@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   postgres-db:
     image: postgres:13
@@ -31,6 +30,7 @@ services:
       DB_USER: admin
       DB_PASS: 123
       DB_NAME: testdb
+      INSTANCE_NAME: app
     depends_on:
       postgres-db:
         condition: service_healthy
@@ -48,6 +48,7 @@ services:
       DB_USER: admin
       DB_PASS: 123
       DB_NAME: testdb
+      INSTANCE_NAME: app2
     depends_on:
       postgres-db:
         condition: service_healthy

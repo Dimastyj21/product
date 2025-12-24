@@ -1,9 +1,9 @@
-import { Module } from "@nestjs/common";
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
-import { Sequelize } from "sequelize";
-import { SequelizeModule } from "@nestjs/sequelize";
+import { SequelizeModule } from '@nestjs/sequelize';
+import { InstanceHeaderMiddleware } from './middleware/instance-header.middleware';
 
 @Module({
   imports: [
@@ -15,11 +15,15 @@ import { SequelizeModule } from "@nestjs/sequelize";
       password: process.env.DB_PASS || '123',
       database: process.env.DB_NAME || 'testdb',
       autoLoadModels: true,
-      synchronize: true,  // ⚠️ В продакшене false!
+      synchronize: true, // ⚠️ В продакшене false!
     }),
-    ProductsModule
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(InstanceHeaderMiddleware).forRoutes('*');  // Применить ко всем роутам
+  }
+}

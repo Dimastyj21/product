@@ -2,6 +2,8 @@ import { BadRequestException, Body, Controller, Get, InternalServerErrorExceptio
 import { ProductsService } from "./products.service";
 import { Product } from './product.model'
 import { CreateProductDto } from "./dto/create-product.dto";
+import { Res } from '@nestjs/common';
+import { Response } from 'express';
 
 @Controller('api/products')
 export class ProductsController {
