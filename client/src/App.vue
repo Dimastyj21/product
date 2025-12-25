@@ -1,35 +1,52 @@
 <script setup lang="ts">
-
+import Footer from './components/footer/Footer.vue';
+import Header from './components/header/Header.vue';
 </script>
 
 <template>
   <div id="app">
-    <!-- Логотипы наверху -->
-    <div>
-      <a href="https://vite.dev" target="_blank">
-        <img src="/vite.svg" class="logo" alt="Vite logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-    
-    <!-- СЮДА подставится HomeView по маршруту / -->
-    <router-view />
+    <Header class="header" />
+    <main class="content">
+      <router-view />
+    </main>
+    <Footer class="footer" />
   </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+#app {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  box-shadow: none;
+  z-index: 1000;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #eee;
+  box-shadow: none;
+  z-index: 1000;
+}
+
+.content {
+  padding-top: 60px;
+  padding-bottom: 50px;
+  min-height: calc(100vh - 110px);
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 </style>
