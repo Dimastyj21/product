@@ -1,6 +1,9 @@
 <template>
- <div>
-    <h1>Главная страница</h1>
- </div>
- <div>я красава)))</div>
+  <v-container>
+    <ProductsList />
+  </v-container>
 </template>
+
+<script setup>
+import ProductsList from '../components/ProductsList.vue'
+</script>
