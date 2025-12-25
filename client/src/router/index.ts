@@ -7,6 +7,11 @@ const routes = [
         name: 'Home',
         component: HomeView
     },
+    {
+        path: '/:catchAll(.*)*',
+        name: 'NotFound',
+        component: () => import('../views/NotFoundView.vue')
+    }
 ]
 
 const router = createRouter({
